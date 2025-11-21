@@ -1,10 +1,10 @@
-# SMART HOUSE – Arduino Project
+# SMART HOUSE – Projet Arduino
 
-Système domotique composé d’un circuit **intérieur** et d’un circuit **extérieur**, intégrant plusieurs capteurs et actionneurs pour assurer sécurité, confort et automatisation.
+Système domotique articulé autour d’un circuit **intérieur** et d’un circuit **extérieur**, intégrant un ensemble de capteurs et d’actionneurs destinés à assurer sécurité, automatisation et confort. Les éléments décrits ci-dessous s’appuient sur la documentation technique Arduino, des références en systèmes embarqués et des dispositifs de détection couramment utilisés dans les environnements domotiques.
 
 ---
 
-## 📸 Photos du projet
+## Photographies du prototype
 
 ### Vue extérieure
 
@@ -16,86 +16,79 @@ Système domotique composé d’un circuit **intérieur** et d’un circuit **ex
 
 ---
 
-## 🏠 Système intérieur
+## Circuit intérieur
 
-Module chargé de détecter et réagir aux conditions environnementales : pluie, feu, fumée, son, température et humidité.
+Module conçu pour analyser l’environnement immédiat et réagir à des phénomènes critiques : pluie, flamme, fumée, bruit, température et humidité. L’ensemble des capteurs est couramment employé dans les systèmes de surveillance domestique et dans la détection de phénomènes potentiellement dangereux.
 
-### Capteurs utilisés
+### Capteurs
 
-* **Capteur de pluie (A0)** : mesure l’humidité, détecte la pluie
-* **Capteur de flamme (A1)** : détecte la présence d’un feu
-* **Capteur de fumée MQ2 (A2)** : détecte les gaz et fumées
-* **Capteur sonore (D2)** : détecte des bruits courts
-* **DHT11 (D4)** : température + humidité
+* Capteur de pluie (A0) : mesure de l’humidité de surface et détection de la pluie.
+* Capteur de flamme (A1) : détection du rayonnement spécifique d’une flamme.
+* Capteur MQ-2 (A2) : détection de fumée et gaz inflammables.
+* Capteur sonore (D2) : détection d’impulsions sonores nettes.
+* DHT11 (D4) : mesure de la température et de l’humidité ambiante.
 
-### Actionneurs / Sorties
+### Actionneurs et sorties
 
-* **Servomoteur (D10)** : rentre le linge automatiquement
-* **Buzzer (D5)** : alarme en cas de flamme
-* **LED rouge (D6)** : fumée détectée
-* **LED blanche (D7)** : clignote selon les bruits
-* **Écran LCD I2C (0x27)** : affiche T°, humidité, ou alertes
+* Servomoteur (D10) : repli automatique du linge en cas de pluie.
+* Buzzer (D5) : alarme sonore en cas de présence de flamme.
+* LED rouge (D6) : indication de fumée détectée.
+* LED blanche (D7) : clignotement en réponse aux bruits.
+* Écran LCD I2C (0x27) : affichage des mesures ou des alertes.
 
-### Fonctionnement
+### Logique de fonctionnement
 
-1. **Pluie < 500** → servo = **180°** (rentrer le linge)
-2. **Flamme détectée (<500)** → buzzer = **1000 Hz**
-3. **Fumée > 300** → LED rouge ON
-4. **Son HIGH** → LED blanche toggle
+1. Pluie < 500 → orientation du servomoteur à 180° (protection du linge).
+2. Flamme détectée (<500) → activation du buzzer à 1000 Hz.
+3. Fumée > 300 → activation de la LED rouge.
+4. Son détecté (HIGH) → bascule de la LED blanche.
 5. Affichage LCD :
 
-   * Alertes si feu/fumée
-   * Sinon température (°C) + humidité (%)
+   * alertes prioritaires en cas de feu ou fumée,
+   * sinon affichage de la température (°C) et de l’humidité (%).
 
-🔗 Code du circuit intérieur :
-[`Interior_SMART_HOUSE.ino`](Interior_SMART_HOUSE.ino)
+Code associé : `Interior_SMART_HOUSE.ino`
 
 ---
 
-## 🚗 Système extérieur
+## Circuit extérieur
 
-Module chargé de détecter la présence, éclairer automatiquement l’entrée, gérer la porte du garage et suivre la position du soleil.
+Module destiné à la détection de présence, à l’éclairage automatique, à la gestion de la porte de garage et à l’orientation du panneau solaire. Les principes utilisés relèvent de la détection ultrasonique, de la photorésistance et de l’asservissement simple.
 
-### Capteurs utilisés
+### Capteurs
 
-* **2 ultrasons (TRIG/ECHO)**
+* Deux capteurs ultrasoniques (TRIG/ECHO) :
 
-  * Route : détection de voiture/personne
-  * Garage : détecte un objet proche (<10 cm)
-* **3 capteurs LDR (A0, A1, A2)**
+  * Détection d’un véhicule ou d’une personne sur la voie d’accès.
+  * Détection d’un obstacle proche dans le garage (<10 cm).
+* Trois capteurs LDR (A0, A1, A2) :
 
-  * A0 : détecte l'obscurité
-  * A1/A2 : tracking solaire gauche/droite
+  * A0 : évaluation du niveau d’obscurité.
+  * A1/A2 : comparaison gauche/droite pour le suivi solaire.
 
 ### Actionneurs
 
-* **LEDs (D6, D7)** : éclairage automatique
-* **Servomoteur porte (D9)** : ouverture/fermeture du garage
-* **Servomoteur solaire (D10)** : orientation du panneau solaire
+* LEDs (D6, D7) : éclairage automatique.
+* Servomoteur de porte (D9) : ouverture et fermeture du garage.
+* Servomoteur solaire (D10) : orientation du panneau solaire selon la luminosité.
 
-### Fonctionnement
+### Logique de fonctionnement
 
-1. **Obscurité + présence route (>800)**
-   → LEDs ON **6 secondes**
-2. **Distance garage < 10 cm**
-   → Porte s’ouvre à **90°**, refermée après **3 s**
-3. **Tracking solaire**
-   → Servo s’oriente selon différence LDR gauche/droite
+1. Obscurité + présence voie (>800) → activation de l’éclairage pendant 6 secondes.
+2. Distance garage < 10 cm → ouverture de la porte à 90°, fermeture après 3 secondes.
+3. Suivi solaire → orientation du servomoteur en fonction de l’écart lumineux LDR gauche/droite.
 
-🔗 Code du circuit extérieur :
-[`Exterieur_SMART_HOUSE.ino`](Exterieur_SMART_HOUSE.ino)
+Code associé : `Exterieur_SMART_HOUSE.ino`
 
 ---
 
-## 🧾 Résumé des fonctionnalités
+## Synthèse des fonctionnalités
 
-* Détection automatique de pluie et protection du linge
-* Alerte incendie (feu / fumée)
-* Détection sonore et signalisation
-* Affichage temps réel (LCD I2C)
-* Détection de véhicule / présence en extérieur
-* Éclairage automatique selon luminosité
-* Ouverture intelligente du garage
-* Orientation d’un panneau solaire
-
-
+* Détection de la pluie et protection automatique du linge.
+* Détection de flamme et de fumée, avec alertes dédiées.
+* Détection sonore et signalisation visuelle.
+* Affichage en temps réel des données environnementales.
+* Détection extérieure de véhicule ou de présence.
+* Éclairage automatique en conditions d’obscurité.
+* Ouverture intelligente et temporisée du garage.
+* Orientation automatique d’un panneau solaire.
