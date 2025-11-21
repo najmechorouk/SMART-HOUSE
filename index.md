@@ -50,7 +50,7 @@ Le module intérieur surveille la météo, détecte les risques d’incendie et 
 
 ### Visualisation
 
-![Vue intérieure](interior.jpg){ width=300 }
+![Vue intérieure](interior.jpg)
 
 Code du module intérieur : [`Interior_SMART_HOUSE.ino`](Interior_SMART_HOUSE.ino)
 
@@ -86,7 +86,7 @@ Le module extérieur contrôle la sécurité, l’éclairage et l’orientation 
 
 ### Visualisation
 
-![Vue extérieure](house.jpg){ width=600 }
+![Vue extérieure](house.jpg)
 
 Code du module extérieur : [`Exterieur_SMART_HOUSE.ino`](Exterieur_SMART_HOUSE.ino)
 
